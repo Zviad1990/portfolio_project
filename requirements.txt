@@ -21,4 +21,4 @@ statsmodels
 urllib3
 wheel
 xgboost
-gunicorn 
+gunicorn

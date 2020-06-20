@@ -8,9 +8,9 @@ import pandas as pd
 app = Flask(__name__)
 run_with_ngrok(app)  # Start ngrok when app is run
 
-@app.route("/a")
+@app.route("/")
 def hello():
-    return "Hello Wo rld!"
+    return "Hello World!"
 
 if __name__ == '__main__':
     app.run()
