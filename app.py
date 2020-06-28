@@ -32,21 +32,14 @@ def predict():
     start_prediction = time()
 
     id = json_input['ID']
-    hf = process_input(json_input)
+    df_get = process_input(json_input)
+    predictions_gb = pd.DataFrame()
 
-    prediction_Poisson = model_glm_poisson.predict(hf)
-    value_Poisson = prediction_Poisson.as_data_frame()['predict'][0]
-
-    prediction_Gamma = model_glm_gamma.predict(hf)
-    value_Gamma = prediction_Gamma.as_data_frame()['predict'][0]
-
-    value_BurningCost = value_Poisson * value_Gamma
-
+    prediction_gb['predict']=model.predict(df_get)
+    result_gb=prediction_gb['predict'][0]
     result = {
         'ID': id,
-        'value_Poisson': value_Poisson,
-        'value_Gamma': value_Gamma,
-        'value_BurningCost': value_BurningCost
+        'value_ClaimsCount': result_gb
     }
 
     # Response logging
