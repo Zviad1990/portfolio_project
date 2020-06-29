@@ -1,3 +1,5 @@
+import pandas as pd
+import xgboost as xgb
 def map_for_dict_Gender(Gender):
     dict_Gender = {'Male': 0, 'Female': 1}
     res = dict_Gender.get(Gender)
@@ -45,7 +47,7 @@ def f_VehUsage_Professional_run(VehUsage):
     return VehUsage_Professional_run
 
 
-def return_NewH2o_Frame():
+def return_pd_Frame():
     columns = [
         'LicAge',
         'Gender',
@@ -59,33 +61,20 @@ def return_NewH2o_Frame():
         'VehUsg_Private+trip to office',
         'VehUsg_Professional',
         'VehUsg_Professional run',
-        'CSP1',
-        'CSP2',
-        'CSP3',
-        'CSP6',
-        'CSP7',
-        'CSP20',
-        'CSP21',
-        'CSP22',
-        'CSP26',
-        'CSP37',
-        'CSP40',
-        'CSP42',
-        'CSP46',
-        'CSP47',
-        'CSP48',
-        'CSP49',
-        'CSP50',
-        'CSP55',
-        'CSP56',
-        'CSP57',
-        'CSP60',
-        'CSP65',
-        'CSP66'
+        'SocioCateg_CSP1',
+        'SocioCateg_CSP2',
+        'SocioCateg_CSP3',
+        'SocioCateg_CSP4',
+        'SocioCateg_CSP5',
+        'SocioCateg_CSP6',
+        'SocioCateg_CSP7',
+        'DrivAgeSq'
     ]
-    return h2o.H2OFrame(
-        [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]],
-        column_names=columns)
+
+    df1=pd.DataFrame([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],index=columns)
+    df2=df1.T
+
+    return df2
 
 def process_input(json_input):
     LicAge = json_input["LicAge"]
@@ -101,66 +90,28 @@ def process_input(json_input):
     VehUsg_Private_trip_to_office = f_VehUsage_Private_trip_to_office(json_input["VehUsage"])
     VehUsg_Professional = f_VehUsage_Professional(json_input["VehUsage"])
     VehUsg_Professional_run = f_VehUsage_Professional_run(json_input["VehUsage"])
+    CSP='SocioCateg_'+json_input["SocioCateg"][:4].upper()
+    Exposure=json_input["Exposure"]
 
-    CSP1 = 0
-    CSP2 = 0
-    CSP3 = 0
-    CSP6 = 0
-    CSP7 = 0
-    CSP20 = 0
-    CSP21 = 0
-    CSP22 = 0
-    CSP26 = 0
-    CSP37 = 0
-    CSP40 = 0
-    CSP42 = 0
-    CSP46 = 0
-    CSP47 = 0
-    CSP48 = 0
-    CSP49 = 0
-    CSP50 = 0
-    CSP55 = 0
-    CSP56 = 0
-    CSP57 = 0
-    CSP60 = 0
-    CSP65 = 0
-    CSP66 = 0
 
-    hf = return_NewH2o_Frame()
 
-    hf[0, 'LicAge'] = LicAge
-    hf[0, 'Gender'] = Gender
-    hf[0, 'MariStat'] = MariStat
-    hf[0, 'DrivAge'] = DrivAge
-    hf[0, 'HasKmLimit'] = HasKmLimit
-    hf[0, 'BonusMalus'] = BonusMalus
-    hf[0, 'OutUseNb'] = OutUseNb
-    hf[0, 'RiskArea'] = RiskArea
-    hf[0, 'VehUsg_Private'] = VehUsg_Private
-    hf[0, 'VehUsg_Private+trip to office'] = VehUsg_Private_trip_to_office
-    hf[0, 'VehUsg_Professional'] = VehUsg_Professional
-    hf[0, 'VehUsg_Professional run'] = VehUsg_Professional_run
-    hf[0, 'CSP1'] = CSP1
-    hf[0, 'CSP2'] = CSP2
-    hf[0, 'CSP3'] = CSP3
-    hf[0, 'CSP6'] = CSP6
-    hf[0, 'CSP7'] = CSP7
-    hf[0, 'CSP20'] = CSP20
-    hf[0, 'CSP21'] = CSP21
-    hf[0, 'CSP22'] = CSP22
-    hf[0, 'CSP26'] = CSP26
-    hf[0, 'CSP37'] = CSP37
-    hf[0, 'CSP40'] = CSP40
-    hf[0, 'CSP42'] = CSP42
-    hf[0, 'CSP46'] = CSP46
-    hf[0, 'CSP47'] = CSP47
-    hf[0, 'CSP48'] = CSP48
-    hf[0, 'CSP49'] = CSP49
-    hf[0, 'CSP50'] = CSP50
-    hf[0, 'CSP55'] = CSP55
-    hf[0, 'CSP56'] = CSP56
-    hf[0, 'CSP57'] = CSP57
-    hf[0, 'CSP60'] = CSP60
-    hf[0, 'CSP65'] = CSP65
-    hf[0, 'CSP66'] = CSP66
-    return hf
+    df2=return_pd_Frame()
+    df2['LicAge'] = LicAge
+    df2['Gender'] = Gender
+    df2['MariStat'] = MariStat
+    df2['DrivAge'] = DrivAge
+    df2['HasKmLimit'] = HasKmLimit
+    df2['BonusMalus'] = BonusMalus
+    df2['OutUseNb'] = OutUseNb
+    df2['RiskArea'] = RiskArea
+    df2['VehUsg_Private'] = VehUsg_Private
+    df2['VehUsg_Private+trip to office'] = VehUsg_Private_trip_to_office
+    df2['VehUsg_Professional'] = VehUsg_Professional
+    df2['VehUsg_Professional run'] = VehUsg_Professional_run
+    df2['DrivAgeSq'] = DrivAgeSqrt
+
+    df2[CSP] = 1
+    # df2['Exposure']=Exposure
+    df3 = xgb.DMatrix(df2)
+
+    return df3

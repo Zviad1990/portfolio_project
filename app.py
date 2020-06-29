@@ -6,6 +6,7 @@ import traceback
 from logging.handlers import RotatingFileHandler
 from time import strftime, time
 import xgboost as xgb
+from proces_data import process_input
 
 # Пробный запуск Flask
 
@@ -33,13 +34,13 @@ def predict():
 
     id = json_input['ID']
     df_get = process_input(json_input)
-    predictions_gb = pd.DataFrame()
+    prediction_gb = pd.DataFrame()
 
     prediction_gb['predict']=model.predict(df_get)
     result_gb=prediction_gb['predict'][0]
     result = {
         'ID': id,
-        'value_ClaimsCount': result_gb
+        'value_ClaimsCount': int(result_gb)
     }
 
     # Response logging
@@ -49,7 +50,7 @@ def predict():
     logger.info(f'{current_datatime} predicted for {duration} msec: {result}\n')
 
     return jsonify(result)
-
+    # return result
 
 
 @app.errorhandler(Exception)
