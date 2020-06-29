@@ -22,6 +22,5 @@ urllib3
 wheel
 xgboost
 gunicorn
-logging
 traceback
 time
