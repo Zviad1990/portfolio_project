@@ -91,7 +91,6 @@ def process_input(json_input):
     VehUsg_Professional = f_VehUsage_Professional(json_input["VehUsage"])
     VehUsg_Professional_run = f_VehUsage_Professional_run(json_input["VehUsage"])
     CSP='SocioCateg_'+json_input["SocioCateg"][:4].upper()
-    Exposure=json_input["Exposure"]
 
 
 
@@ -111,7 +110,6 @@ def process_input(json_input):
     df2['DrivAgeSq'] = DrivAgeSqrt
 
     df2[CSP] = 1
-    # df2['Exposure']=Exposure
     df3 = xgb.DMatrix(df2)
 
     return df3
