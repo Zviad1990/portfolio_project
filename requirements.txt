@@ -22,5 +22,3 @@ urllib3
 wheel
 xgboost
 gunicorn
-traceback
-time
